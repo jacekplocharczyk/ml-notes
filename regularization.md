@@ -1,1 +1,100 @@
 # Regularization
+
+Short overview of regularization techniques.  
+Their goal is to reduce test error at the expense of increasing the train error.
+
+## Parameter Norm Penalties
+
+Norm family which is focused on limiting the model capacity by adding to the objective function $\tilde{J}$ some penalty $\Omega(\pmb{\theta})$.   
+The impact of this penalty is controlled by the parameter $\alpha\in[0,\infty )$ .  
+General form:
+
+$$
+\tilde{J}(\pmb{\theta}; \pmb{X},\pmb{y}) = J(\pmb{\theta}; \pmb{X},\pmb{y}) + \alpha\Omega(\pmb{\theta})
+$$
+
+Hints:
+* In neural networks you typically do not use bias weights to compute  $\Omega(\pmb{\theta})$.  
+  Therefore we use $\pmb{w}$ to denote only the weights.
+* It is sometimes reasonable to use different  $\alpha$ for different layers.
+
+Types of hte Parameter Norm Penalties:
+
+1. $L^2$ regularization (weight decay).  
+   Penalty form:
+   $$\Omega(\pmb{\theta}) = \frac{1}{2}||\pmb{w}||^2_2$$
+   The goal of this regualrization is to decrease variance on the inputs which has a high variance and low correlation with the output.
+1. $L^1$ regularization  
+   Penalty form:
+   $$\Omega(\pmb{\theta}) = ||\pmb{w}||_1 = \sum_i |w_i|$$
+   $L^1$ regularization results in the solution which is more sparese. In other words it discards some inputs by setting corresponding weights to 0.  
+   This regularization is often used in feature selection mechanisms.
+
+
+## Data Augmentation
+
+To obtaine lower test error we can also artificially create more training examples. By doing so we can obtain better generalization sacrificing small amount of computing power.  
+This task is highly domain dependent. Examples how to perform data augmentation:
+1. [Image processing] Transform image (crop, rotate, slightly change colors)
+2. [General] Injecting noise to the neural network - adding noise directly to the intermediate signals
+
+Hints:
+* When comparing two algorithms you need to be sure that both have the same preprocessing steps
+
+## Noise Robustness
+There are different ways to obtain noise robustness. Three, the most popular are:
+1. Adding noise to the inputs and to the hidden units
+2. Adding noise to the weights (priamrly used in the context of recurrent neural networks)
+2. Adding noise to the outputs   
+   (e.g. _label smoothing_ where we assume that correct label probability is not a 100% but 100% - $\epsilon$, where  $\epsilon$ is describing our uncertainty about the labeling quality)
+
+
+## Early stopping
+
+This is the way to perserve the best validation set performance. It is simply storing the best perfomring weights on the validation set.  
+If the model doesn't imporve its performance over pre-defined epochs, the process of learning is stopped and those weights are returned.
+
+
+## Parameters Sharing
+
+If two tasks _A_ and _B_ are similar enough we could try to tie weigths and use this information in penalty form:
+
+$$\Omega(\pmb{w}^{(A)}, \pmb{w}^{(B)}) = ||\pmb{w}^{(A)} - \pmb{w}^{(B)}||^2_2$$
+
+It can be useful to decrese amount of weights needed to be stored. It is used in Convolutional Neural Networks.  
+You can also mix unsupervised and supervised learning here.
+
+
+## Sparse Representation
+
+Sparse representation describes vector _x_ as a spars vecotr _h_ which perserves most of the _x_ information.  
+It has similar form to the $L^1$ regularization:
+
+$$
+\tilde{J}(\pmb{\theta}; \pmb{X},\pmb{y}) = J(\pmb{\theta}; \pmb{X},\pmb{y}) + \alpha\Omega(\pmb{h})
+$$
+where $\pmb h$ is a function that maps $x$ to the sparse vector and 
+$\Omega(\pmb{h})  = ||\pmb{h}||_1 = \sum_i |h_i|$
+
+
+## Bagging (Bootstrap Aggregating)
+
+
+It is a technique for reducing generalization error by combining serveral models.  
+The reason that model averaging works is taht different models will usually not make all the same errors on the test set.
+
+Hints:
+* It does not have to be used with the same algorithm types
+* Bagging perform at least as well as the any of its members
+* It is more computation consuming
+* __Its use is usally discouraged when benchamrking algorithms for scientifc papers__
+
+
+## Boosting
+
+It is incremental adding new neurons to NN to obtain higher capacity.
+
+
+
+Credits:
+1. _Deep Learning_, I. Goodfellow, Y. Bengio, A. Courville, MIT Press 2016
